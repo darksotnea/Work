@@ -66,7 +66,6 @@ public class NaytiMassuVodi {
                 if (frontier > sourceArray[j]) {
                     sumWater += frontier - sourceArray[j];
                 }
-//                System.out.println("Промежуточная сумма равна: " + sumWater);
             }
         }
         return sumWater;
@@ -77,12 +76,12 @@ public class NaytiMassuVodi {
         for (int i =position-1; i > max ; i--) {
             if ((i != max)&(sourceArray[i] >= sourceArray[max])) {
                 arrayOfMaximums.remove(i);
-//                position--;
             } else { break;}
         }
     }
 
     public static void main(String[] args) {
+        //тестовые массивы
         int[][] setOfMassives = {
                             {2, 5, 1, 2, 3, 4, 7, 7, 6},                         //= 10
                             {1, 3, 2, 3, 5, 5, 7, 7, 1, 6, 2, 1, 1, 4, 3, 3, 1}, //= 14
@@ -97,7 +96,7 @@ public class NaytiMassuVodi {
                             {5, 1, 3, 6, 1, 6, 1, 3, 1, 4},                      //= 18
                             {0, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 1},                //= 1
                             {5, 1, 4, 2, 3},                                     //= 4
-                            {1, 0, 7, 0, 1},                                   //= 2
+                            {1, 0, 7, 0, 1},                                     //= 2
                             {2, 7, 1, 1, 6, 2, 4, 1, 1, 2},                      //= 14
                             {2, 1, 3, 2, 3, 1, 2},                               //= 3
                             {5, 4, 3, 2, 1},                                     //= нем воды
@@ -108,7 +107,7 @@ public class NaytiMassuVodi {
                             {3, 1, 1, 5, 1, 3, 2},                               //= 6
                             {1, 2, 3, 4, 5},                                     //= нет воды
                             {5, 1, 0, 1},                                        //= 1
-                            {2, 5, 1, 2, 3, 4, 7, 7, 6, 3, 5}                   //= 12
+                            {2, 5, 1, 2, 3, 4, 7, 7, 6, 3, 5}                    //= 12
         };
         for(int[] i : setOfMassives) {
             new NaytiMassuVodi(i).run();
