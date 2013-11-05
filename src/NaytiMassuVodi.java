@@ -1,49 +1,54 @@
 import java.util.ArrayList;
 
 public class NaytiMassuVodi {
-    // Размер массива при получении из входных данных (размер N) будет N/2+1.
-//    int[] vvod = {2, 5, 1, 2, 3, 4, 7, 7, 6};                      //= 10
-    int[] vvod = {1, 3, 2, 3, 5, 5, 7, 7, 1, 6, 2, 1, 1, 4, 3, 3, 1}; //= 14
-//    int[] vvod = {4, 4, 1, 1, 2, 3, 4, 5, 7, 7};                      //= 9
-//    int[] vvod = {2, 2, 5, 2, 3, 5, 2, 7, 6, 1, 1, 1};                //= 8
-//    int[] vvod = {7, 5, 1, 2, 3, 4, 7, 7, 6};                         //= 20
-//    int[] vvod = {7, 5, 1, 2, 3, 4, 7, 7};                            //= 20
-//    int[] vvod = {1, 2, 3, 4, 5, 4, 7, 7, 7, 7, 6};                   //= 1
-//    int[] vvod = {7, 7, 5, 4, 3, 2, 1, 1, 1};                         //= нет максимумов
-//    int[] vvod = {7, 7, 5, 4, 3, 2, 1, 3, 1};                         //= 3
-//    int[] vvod = {7, 7, 5, 4, 3, 2, 1, 3, 1, 2};                      //= 4
+    ArrayList<Integer> arrayOfMaximums = new ArrayList();
+    int [] sourceArray;
 
-    ArrayList<Integer> maxMass = new ArrayList();
+    public NaytiMassuVodi(int[] sourceArray) {
+        this.sourceArray = sourceArray;
+    }
 
     void run() {
-
-        for (int i = 0; i < vvod.length - 1; i++) {
-            for (int j = i; j < vvod.length-1; j++) {
-                if (vvod[j] < vvod[j+1]) {
+        //получение массива со всеми локальными максимумами
+        for (int i = 0; i < sourceArray.length; i++) {
+            for (int j = i; j < sourceArray.length-1; j++) {
+                if ( sourceArray[j] <  sourceArray[j+1]) {
                     i++;
                 } else {
                     if (j == 0) {
-                        maxMass.add(j);
+                        arrayOfMaximums.add(j);
                         i++;
                     }
                     break;
                 }
             }
-            if (i < vvod.length - 2) {
-                if (vvod[i - 1] < vvod[i] & vvod[i] >= vvod[i + 1]) {
-                    maxMass.add(i);
+            if (i <  sourceArray.length - 1) {
+                if ( sourceArray[i - 1] <  sourceArray[i] &  sourceArray[i] >=  sourceArray[i + 1]) {
+                    arrayOfMaximums.add(i);
                 }
             }
         }
 
-        if (vvod[vvod.length-1] > vvod[vvod.length - 2]) {
-            maxMass.add(vvod.length-1);
+        if ( sourceArray[ sourceArray.length-1] >  sourceArray[ sourceArray.length - 2]) {
+            arrayOfMaximums.add(sourceArray.length - 1);
         }
 
-        if (maxMass.size() == 0 | maxMass.size() == 1) {
-            System.out.println("Массив не имеет максимумов! Вода утекёт!");
+        if (arrayOfMaximums.size() == 0 | arrayOfMaximums.size() == 1) {
+            System.out.println("Массив не имеет ям! Вода вся утекла после дождя!");
         } else {
-            System.out.println("Всего накопившейся воды: " + summWater(maxMass));
+            int indexOfMaxValue = 0;
+            for (int i = 0; i < arrayOfMaximums.size()-1; i++) {
+                if ( sourceArray[arrayOfMaximums.get(i)] >  sourceArray[arrayOfMaximums.get(i + 1)]) {
+                } else if ( sourceArray[arrayOfMaximums.get(i + 1)] >  sourceArray[arrayOfMaximums.get(indexOfMaxValue)]) {
+                            deleteGap(i + 1, indexOfMaxValue);
+                            indexOfMaxValue =  i + 1;
+                       } else if ( sourceArray[arrayOfMaximums.get(i + 1)] < sourceArray[arrayOfMaximums.get(indexOfMaxValue)]) {
+                                    deleteGap(i + 1, indexOfMaxValue);
+                              } else {
+                                    indexOfMaxValue = i + 1;
+                              }
+            }
+            System.out.println("Всего накопившейся воды: " + summWater(arrayOfMaximums));
         }
     }
 
@@ -51,15 +56,15 @@ public class NaytiMassuVodi {
         int frontier = 0;
         int sumWater = 0;
         for (int i = 0; i < massMax.size()-1; i++) {
-            if (vvod[massMax.get(i)] >= vvod[massMax.get(i + 1)]) {
-                frontier = vvod[massMax.get(i + 1)];
+            if (sourceArray[massMax.get(i)] >= sourceArray[massMax.get(i + 1)]) {
+                frontier = sourceArray[massMax.get(i + 1)];
             } else {
-                frontier = vvod[massMax.get(i)];
+                frontier = sourceArray[massMax.get(i)];
             }
 
             for (int j = massMax.get(i)+1; j != massMax.get(i + 1); j++) {
-                if (frontier > vvod[j]) {
-                    sumWater += frontier - vvod[j];
+                if (frontier > sourceArray[j]) {
+                    sumWater += frontier - sourceArray[j];
                 }
 //                System.out.println("Промежуточная сумма равна: " + sumWater);
             }
@@ -67,7 +72,46 @@ public class NaytiMassuVodi {
         return sumWater;
     }
 
+    //удаление промежуточных максимумов, которые ограничены по бокам более большими максимумами.
+    void deleteGap(int position, int max) {
+        for (int i =position-1; i > max ; i--) {
+            if ((i != max)&(sourceArray[i] >= sourceArray[max])) {
+                arrayOfMaximums.remove(i);
+//                position--;
+            } else { break;}
+        }
+    }
+
     public static void main(String[] args) {
-        new NaytiMassuVodi().run();
+        int[][] setOfMassives = {
+                            {2, 5, 1, 2, 3, 4, 7, 7, 6},                         //= 10
+                            {1, 3, 2, 3, 5, 5, 7, 7, 1, 6, 2, 1, 1, 4, 3, 3, 1}, //= 14
+                            {4, 4, 1, 1, 2, 3, 4, 5, 7, 7},                      //= 9
+                            {2, 2, 5, 2, 3, 5, 2, 7, 6, 1, 1, 1},                //= 8
+                            {7, 5, 1, 2, 3, 4, 7, 7, 6},                         //= 20
+                            {7, 5, 1, 2, 3, 4, 7, 7},                            //= 20
+                            {1, 2, 3, 4, 5, 4, 7, 7, 7, 7, 6},                   //= 1
+                            {7, 7, 5, 4, 3, 2, 1, 1, 1},                         //= нет максимумов
+                            {7, 7, 5, 4, 3, 2, 1, 3, 1},                         //= 3
+                            {7, 7, 5, 4, 3, 2, 1, 3, 1, 2},                      //= 4
+                            {5, 1, 3, 6, 1, 6, 1, 3, 1, 4},                      //= 18
+                            {0, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 1},                //= 1
+                            {5, 1, 4, 2, 3},                                     //= 4
+                            {1, 0, 7, 0, 1},                                   //= 2
+                            {2, 7, 1, 1, 6, 2, 4, 1, 1, 2},                      //= 14
+                            {2, 1, 3, 2, 3, 1, 2},                               //= 3
+                            {5, 4, 3, 2, 1},                                     //= нем воды
+                            {5, 1, 3},                                           //= 2
+                            {1, 2, 3, 2, 5, 3, 4},                               //= 2
+                            {5, 1, 5, 1, 5, 1, 5},                               //= 12
+                            {1, 5, 1, 5, 1, 5, 1},                               //= 8
+                            {3, 1, 1, 5, 1, 3, 2},                               //= 6
+                            {1, 2, 3, 4, 5},                                     //= нет воды
+                            {5, 1, 0, 1},                                        //= 1
+                            {2, 5, 1, 2, 3, 4, 7, 7, 6, 3, 5}                   //= 12
+        };
+        for(int[] i : setOfMassives) {
+            new NaytiMassuVodi(i).run();
+        }
     }
 }
